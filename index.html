@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SIPRAS – Peminjaman Sarana &amp; Prasarana FSB UKI</title>
+<meta name="description" content="Sistem Peminjaman Sarana & Prasarana Fakultas Sastra dan Bahasa, Universitas Kristen Indonesia">
+<meta name="theme-color" content="#1f3a68">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="SIPRAS">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<script>
+  /* ====== SATU-SATUNYA YANG PERLU DIATUR ======
+     Alamat web app SIPRAS (sebaiknya URL Gerbang Login, agar pengguna langsung masuk dengan akun Google). */
+  var SIPRAS_URL = 'https://script.google.com/macros/s/AKfycbycoBoxFnaOtjFQYRbAlLGgM874sAptLqwGArnIIAT1q2RH_rrpjID_GByf-J6zy0uTwg/exec';
+
+  // Jika dibuka sebagai aplikasi yang sudah terpasang, langsung masuk ke SIPRAS
+  (function () {
+    var app = (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone === true;
+    var q = location.search.match(/[?&]p=([a-z]+)/);
+    if (app || /[?&]buka=1/.test(location.search)) {
+      location.replace(SIPRAS_URL + (q ? (SIPRAS_URL.indexOf('?') < 0 ? '?' : '&') + 'p=' + q[1] : ''));
+    }
+  })();
+</script>
+<style>
+  :root{--navy:#1f3a68;--navy2:#2b4f8a;--bg:#f4f6fa;--text:#1d2433;--muted:#667085;--line:#e2e7ef}
+  *{box-sizing:border-box}
+  body{margin:0;min-height:100vh;font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);color:var(--text);
+    display:flex;align-items:center;justify-content:center;padding:24px 16px}
+  .box{background:#fff;border:1px solid var(--line);border-radius:18px;max-width:420px;width:100%;padding:32px 24px;text-align:center;box-shadow:0 10px 30px rgba(31,58,104,.08)}
+  .logo{width:100%;max-width:280px;height:auto;margin:0 auto 6px;display:block}
+  h1{font-size:22px;margin:4px 0 2px;color:var(--navy)}
+  .sub{color:var(--muted);font-size:14px;margin:0 0 24px}
+  .btn{display:block;width:100%;border:0;border-radius:10px;padding:14px 16px;font:inherit;font-weight:700;font-size:16px;cursor:pointer;text-decoration:none;margin-bottom:10px}
+  .pri{background:var(--navy);color:#fff}.pri:hover{background:var(--navy2)}
+  .sec{background:#fff;color:var(--navy);border:1px solid #cfd6e2}
+  .hidden{display:none!important}
+  .tip{font-size:13px;color:var(--muted);background:#f8fafc;border-radius:10px;padding:10px 12px;margin-top:6px;text-align:left;line-height:1.5}
+  .foot{font-size:12px;color:var(--muted);margin-top:18px}
+</style>
+</head>
+<body>
+<main class="box">
+  <img class="logo" alt="SIPRAS FSB UKI – Sistem Peminjaman Sarana dan Prasarana" src="logo.png">
+  <p class="sub">Fakultas Sastra dan Bahasa – Universitas Kristen Indonesia</p>
+
+  <a class="btn pri" id="buka" href="#">Buka SIPRAS</a>
+  <button class="btn sec hidden" id="pasang" type="button">📲 Pasang sebagai aplikasi</button>
+
+  <div class="tip hidden" id="tip-ios">📲 <b>Pasang di iPhone/iPad:</b> buka halaman ini di Safari, ketuk tombol <b>Bagikan</b> (kotak dengan panah ke atas), lalu pilih <b>Tambahkan ke Layar Utama</b>.</div>
+  <div class="tip hidden" id="tip-lain">📲 <b>Pasang di HP/laptop:</b> buka menu browser (⋮) lalu pilih <b>Instal aplikasi</b> atau <b>Tambahkan ke layar utama</b>.</div>
+
+  <p class="foot">Masuk menggunakan akun Google Anda.</p>
+</main>
+
+<script>
+  document.getElementById('buka').href = SIPRAS_URL;
+
+  var tunda = null, ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  window.addEventListener('beforeinstallprompt', function (e) {
+    e.preventDefault(); tunda = e;
+    document.getElementById('pasang').classList.remove('hidden');
+    document.getElementById('tip-lain').classList.add('hidden');
+  });
+  document.getElementById('pasang').addEventListener('click', function () {
+    if (!tunda) return;
+    tunda.prompt();
+    tunda.userChoice.finally(function () { tunda = null; document.getElementById('pasang').classList.add('hidden'); });
+  });
+  window.addEventListener('appinstalled', function () { document.getElementById('pasang').classList.add('hidden'); });
+  setTimeout(function () { if (!tunda) document.getElementById(ios ? 'tip-ios' : 'tip-lain').classList.remove('hidden'); }, 1500);
+
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(function () {});
+</script>
+</body>
+</html>
