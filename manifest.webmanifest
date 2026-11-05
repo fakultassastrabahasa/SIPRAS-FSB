@@ -1,6 +1,6 @@
 {
   "name": "SIPRAS – Peminjaman Sarana & Prasarana FSB UKI",
-  "short_name": "SIPRAS",
+  "short_name": "SIPRAS FSB",
   "description": "Sistem Peminjaman Sarana & Prasarana Fakultas Sastra dan Bahasa, Universitas Kristen Indonesia",
   "lang": "id",
   "start_url": "./?source=app",
